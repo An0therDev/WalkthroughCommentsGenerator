@@ -7,7 +7,17 @@ Public Class frmMain
 
     End Sub
 
-
+    'Toggle Form Textbox For Other Entry
+    Private Sub rbOther_CheckedChanged(sender As Object, e As EventArgs) Handles rbOther.CheckedChanged
+        If rbOther.Checked Then
+            'Enable Textbox
+            txtOther.ReadOnly = False
+        Else
+            'Reset if not selected
+            txtOther.Text = "".ToString
+            txtOther.ReadOnly = True
+        End If
+    End Sub
 
     'Toggle Form Textbox For Password
     Private Sub rbPassword_CheckedChanged(sender As Object, e As EventArgs) Handles rbPassword.CheckedChanged
@@ -43,17 +53,27 @@ Public Class frmMain
         If cbComm.Checked And cbLeaderview.Checked Then
             cbCommUsed.Enabled = True
             cbCommUsed.CheckState = CheckState.Checked
-            cbLink.Enabled = True
+            'cbLink.Enabled = True
         ElseIf cbComm.Checked And Not cbLeaderview.Checked Then
             cbCommUsed.CheckState = CheckState.Checked
-            cbLink.Enabled = True
+            'cbLink.Enabled = True
         Else
             cbCommUsed.CheckState = CheckState.Unchecked
             cbCommUsed.Enabled = False
+            'cbLink.Enabled = False
+            'cbLink.CheckState = CheckState.Unchecked
+        End If
+
+    End Sub
+
+    'If Comm is not used, disable CommLink
+    Private Sub cbCommUsed_CheckedChanged(sender As Object, e As EventArgs) Handles cbCommUsed.CheckedChanged
+        If cbCommUsed.Checked Then
+            cbLink.Enabled = True
+        Else
             cbLink.Enabled = False
             cbLink.CheckState = CheckState.Unchecked
         End If
-
     End Sub
 
     'Toggle input for NRP
@@ -98,7 +118,7 @@ Public Class frmMain
 
     'Ensure form is complete
     Private Function ValidateForm() As Boolean
-        Dim validCid, validPassword, validFacts, validVerified As Boolean
+        Dim validCid, validPassword, validOther, validFacts, validVerified As Boolean
         Dim validForm As Boolean = False
         Try
             'Check text boxes for input. NRP text box not checked to allow for later edit
@@ -117,6 +137,15 @@ Public Class frmMain
             Else
                 validPassword = True
             End If
+            If rbOther.Checked Then
+                If (String.IsNullOrEmpty(txtOther.Text.ToString)) Then
+                    validOther = False
+                Else
+                    validOther = True
+                End If
+            Else
+                validOther = True
+            End If
             If (String.IsNullOrEmpty(txtFacts.Text.ToString)) Then
                 validFacts = False
             Else
@@ -129,7 +158,7 @@ Public Class frmMain
             End If
 
             'Evaluate checks
-            If validCid AndAlso validPassword AndAlso validFacts AndAlso validVerified Then
+            If validCid AndAlso validPassword AndAlso validFacts AndAlso validFacts AndAlso validVerified Then
                 validForm = True
             End If
         Catch ex As Exception
@@ -159,9 +188,11 @@ Public Class frmMain
             If rbCid.Checked Then
                 comment &= "Conference ID Number"
             ElseIf rbPassword.Checked Then
-                comment &= "Password\Passcode(" + Convert.ToString(txtPassword.Text) + ")"
+                comment &= "Password\code(" + Convert.ToString(txtPassword.Text) + ")"
             ElseIf rbDirect.Checked Then
                 comment &= "Direct Entry"
+            ElseIf rbOther.Checked Then
+                comment &= Convert.ToString(txtOther.Text)
             End If
             comment &= Environment.NewLine
             'Add format to comment
@@ -188,6 +219,9 @@ Public Class frmMain
             If cbComm.Checked Then
                 If cbCommUsed.Checked Then
                     comment &= "Comm Line WILL be used"
+                    If cbLink.Checked Then
+                        comment &= "   (Link Comm and Main)"
+                    End If
                 Else
                     comment &= "Comm Line WILL NOT be used"
                 End If
@@ -226,20 +260,20 @@ Public Class frmMain
             End If
             'Add silent rec to comment
             If cbRecord.Checked Then
-                comment &= "Silent Record Line: YES" + Environment.NewLine
+                comment &= "Silent Record Line: Yes" + Environment.NewLine
             End If
             'Add VT to comment
             If cbVt.Checked Then
-                comment &= "True VT: YES" + Environment.NewLine
+                comment &= "True VT: Yes" + Environment.NewLine
             End If
             'Add other to comment
-            Dim arrOther() As String
+            Dim arrOtherDetails() As String
             Dim counter As Integer
-            arrOther = txtOther.Lines
+            arrOtherDetails = txtOtherDetails.Lines
             comment &= "Other details for operator: "
-            If (arrOther IsNot Nothing AndAlso arrOther.Count > 0) Then
-                For counter = 0 To arrOther.GetUpperBound(0)
-                    comment &= Convert.ToString(arrOther(counter))
+            If (arrOtherDetails IsNot Nothing AndAlso arrOtherDetails.Count > 0) Then
+                For counter = 0 To arrOtherDetails.GetUpperBound(0)
+                    comment &= Convert.ToString(arrOtherDetails(counter))
                     comment &= Environment.NewLine
                 Next
             Else
@@ -275,16 +309,16 @@ Public Class frmMain
         cbVt.CheckState = CheckState.Unchecked
         cbLink.CheckState = CheckState.Unchecked
         cbLink.Enabled = False
-        txtOther.Text = "".ToString
+        txtOtherDetails.Text = "".ToString
         txtVerified.Text = "".ToString
     End Sub
 
     'Call this to copy a string to the system clipboard
-    Private Sub CopyString(i As String)
+    Private Sub CopyString(stringIn As String)
         Try
-            If i IsNot String.Empty Then
+            If stringIn IsNot String.Empty Then
                 'Copy to clipboard
-                My.Computer.Clipboard.SetText(i.ToString)
+                My.Computer.Clipboard.SetText(stringIn.ToString)
             Else
                 'Set error
                 Throw New ApplicationException("Nothing was generated!")
@@ -298,18 +332,18 @@ Public Class frmMain
     Private Sub SavetoFile(body As String)
         'Dim file As System.IO.StreamWriter
         Dim fileName, filePath As String
-        fileName = txtCid.Text.ToString.Trim + ".txt"
-        'DevelopmentPath
-        filePath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\Walkthrough Comments\"
-        'Production Path
-        'filePath = "W:\Walkthrough Comments\"
         Try
+            fileName = txtCid.Text.ToString.Trim + ".txt"
+            'DevelopmentPath
+            filePath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\WT Comments\" + Convert.ToString(Now.Date.Year) + "\" + Convert.ToString(MonthName(Now.Date.Month)) + "\"
+            'Production Path
+            'filePath = "W:\WT Comments\" + Convert.ToString(Now.Date.Year) + "\" + Convert.ToString(MonthName(Now.Date.Month)) + "\"
+
+            'Create directory and save file. (Directory will not be overwritten if it exists, file will)
             Directory.CreateDirectory(filePath)
             File.WriteAllText(filePath & Convert.ToString(fileName), body)
         Catch ex As Exception
             MessageBox.Show(ex.Message)
         End Try
-
     End Sub
-
 End Class
