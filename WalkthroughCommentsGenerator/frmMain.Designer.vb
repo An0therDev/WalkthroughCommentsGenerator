@@ -22,6 +22,7 @@ Partial Class frmMain
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmMain))
         Me.txtNrp = New System.Windows.Forms.TextBox()
         Me.cbNrp = New System.Windows.Forms.CheckBox()
         Me.lblNrp = New System.Windows.Forms.Label()
@@ -38,6 +39,8 @@ Partial Class frmMain
         Me.rbLecture = New System.Windows.Forms.RadioButton()
         Me.rbStandard = New System.Windows.Forms.RadioButton()
         Me.gbReference = New System.Windows.Forms.GroupBox()
+        Me.rbOther = New System.Windows.Forms.RadioButton()
+        Me.txtOther = New System.Windows.Forms.TextBox()
         Me.rbDirect = New System.Windows.Forms.RadioButton()
         Me.rbCid = New System.Windows.Forms.RadioButton()
         Me.rbPassword = New System.Windows.Forms.RadioButton()
@@ -48,7 +51,6 @@ Partial Class frmMain
         Me.txtCid = New System.Windows.Forms.TextBox()
         Me.lblCid = New System.Windows.Forms.Label()
         Me.gbSpecial = New System.Windows.Forms.GroupBox()
-        Me.cbLink = New System.Windows.Forms.CheckBox()
         Me.cbVt = New System.Windows.Forms.CheckBox()
         Me.cbRecord = New System.Windows.Forms.CheckBox()
         Me.cbPolling = New System.Windows.Forms.CheckBox()
@@ -56,6 +58,7 @@ Partial Class frmMain
         Me.cbApl = New System.Windows.Forms.CheckBox()
         Me.cbIws = New System.Windows.Forms.CheckBox()
         Me.cbSs = New System.Windows.Forms.CheckBox()
+        Me.cbLink = New System.Windows.Forms.CheckBox()
         Me.lblOther = New System.Windows.Forms.Label()
         Me.txtOtherDetails = New System.Windows.Forms.RichTextBox()
         Me.lblVerified = New System.Windows.Forms.Label()
@@ -65,8 +68,7 @@ Partial Class frmMain
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
         Me.rbTogether = New System.Windows.Forms.RadioButton()
         Me.rbSeparate = New System.Windows.Forms.RadioButton()
-        Me.rbOther = New System.Windows.Forms.RadioButton()
-        Me.txtOther = New System.Windows.Forms.TextBox()
+        Me.lblGenerated = New System.Windows.Forms.Label()
         Me.gbFormat.SuspendLayout()
         Me.gbReference.SuspendLayout()
         Me.gbSpecial.SuspendLayout()
@@ -156,7 +158,6 @@ Partial Class frmMain
         Me.txtFacts.Name = "txtFacts"
         Me.txtFacts.Size = New System.Drawing.Size(241, 23)
         Me.txtFacts.TabIndex = 17
-        Me.txtFacts.Text = "f&l"
         '
         'lblFacts
         '
@@ -213,12 +214,10 @@ Partial Class frmMain
         'rbStandard
         '
         Me.rbStandard.AutoSize = True
-        Me.rbStandard.Checked = True
         Me.rbStandard.Location = New System.Drawing.Point(9, 19)
         Me.rbStandard.Name = "rbStandard"
         Me.rbStandard.Size = New System.Drawing.Size(92, 17)
         Me.rbStandard.TabIndex = 13
-        Me.rbStandard.TabStop = True
         Me.rbStandard.Text = "Standard Q&&A"
         Me.rbStandard.UseVisualStyleBackColor = True
         '
@@ -237,6 +236,25 @@ Partial Class frmMain
         Me.gbReference.TabStop = False
         Me.gbReference.Text = "Participants will reference:"
         '
+        'rbOther
+        '
+        Me.rbOther.AutoSize = True
+        Me.rbOther.Location = New System.Drawing.Point(108, 42)
+        Me.rbOther.Name = "rbOther"
+        Me.rbOther.Size = New System.Drawing.Size(51, 17)
+        Me.rbOther.TabIndex = 10
+        Me.rbOther.Text = "Other"
+        Me.rbOther.UseVisualStyleBackColor = True
+        '
+        'txtOther
+        '
+        Me.txtOther.Location = New System.Drawing.Point(210, 41)
+        Me.txtOther.Name = "txtOther"
+        Me.txtOther.ReadOnly = True
+        Me.txtOther.Size = New System.Drawing.Size(118, 20)
+        Me.txtOther.TabIndex = 11
+        Me.txtOther.TabStop = False
+        '
         'rbDirect
         '
         Me.rbDirect.AutoSize = True
@@ -244,19 +262,16 @@ Partial Class frmMain
         Me.rbDirect.Name = "rbDirect"
         Me.rbDirect.Size = New System.Drawing.Size(80, 17)
         Me.rbDirect.TabIndex = 7
-        Me.rbDirect.TabStop = True
         Me.rbDirect.Text = "Direct Entry"
         Me.rbDirect.UseVisualStyleBackColor = True
         '
         'rbCid
         '
         Me.rbCid.AutoSize = True
-        Me.rbCid.Checked = True
         Me.rbCid.Location = New System.Drawing.Point(9, 19)
         Me.rbCid.Name = "rbCid"
         Me.rbCid.Size = New System.Drawing.Size(94, 17)
         Me.rbCid.TabIndex = 6
-        Me.rbCid.TabStop = True
         Me.rbCid.Text = "Conference ID"
         Me.rbCid.UseVisualStyleBackColor = True
         '
@@ -298,7 +313,6 @@ Partial Class frmMain
         Me.cmbEarly.Name = "cmbEarly"
         Me.cmbEarly.Size = New System.Drawing.Size(42, 21)
         Me.cmbEarly.TabIndex = 1
-        Me.cmbEarly.Text = "15"
         '
         'lblTime
         '
@@ -342,6 +356,83 @@ Partial Class frmMain
         Me.gbSpecial.TabStop = False
         Me.gbSpecial.Text = "Special Features"
         '
+        'cbVt
+        '
+        Me.cbVt.AutoSize = True
+        Me.cbVt.Location = New System.Drawing.Point(238, 20)
+        Me.cbVt.Name = "cbVt"
+        Me.cbVt.Size = New System.Drawing.Size(86, 17)
+        Me.cbVt.TabIndex = 31
+        Me.cbVt.TabStop = False
+        Me.cbVt.Text = "&Voice Talent"
+        Me.cbVt.UseVisualStyleBackColor = True
+        '
+        'cbRecord
+        '
+        Me.cbRecord.AutoSize = True
+        Me.cbRecord.Location = New System.Drawing.Point(121, 66)
+        Me.cbRecord.Name = "cbRecord"
+        Me.cbRecord.Size = New System.Drawing.Size(124, 17)
+        Me.cbRecord.TabIndex = 30
+        Me.cbRecord.TabStop = False
+        Me.cbRecord.Text = "Backup &Record Line"
+        Me.cbRecord.UseVisualStyleBackColor = True
+        '
+        'cbPolling
+        '
+        Me.cbPolling.AutoSize = True
+        Me.cbPolling.Location = New System.Drawing.Point(121, 43)
+        Me.cbPolling.Name = "cbPolling"
+        Me.cbPolling.Size = New System.Drawing.Size(57, 17)
+        Me.cbPolling.TabIndex = 29
+        Me.cbPolling.TabStop = False
+        Me.cbPolling.Text = "&Polling"
+        Me.cbPolling.UseVisualStyleBackColor = True
+        '
+        'cbPlayback
+        '
+        Me.cbPlayback.AutoSize = True
+        Me.cbPlayback.Location = New System.Drawing.Point(121, 20)
+        Me.cbPlayback.Name = "cbPlayback"
+        Me.cbPlayback.Size = New System.Drawing.Size(70, 17)
+        Me.cbPlayback.TabIndex = 28
+        Me.cbPlayback.TabStop = False
+        Me.cbPlayback.Text = "Play&back"
+        Me.cbPlayback.UseVisualStyleBackColor = True
+        '
+        'cbApl
+        '
+        Me.cbApl.AutoSize = True
+        Me.cbApl.Location = New System.Drawing.Point(9, 43)
+        Me.cbApl.Name = "cbApl"
+        Me.cbApl.Size = New System.Drawing.Size(46, 17)
+        Me.cbApl.TabIndex = 26
+        Me.cbApl.TabStop = False
+        Me.cbApl.Text = "&APL"
+        Me.cbApl.UseVisualStyleBackColor = True
+        '
+        'cbIws
+        '
+        Me.cbIws.AutoSize = True
+        Me.cbIws.Location = New System.Drawing.Point(9, 66)
+        Me.cbIws.Name = "cbIws"
+        Me.cbIws.Size = New System.Drawing.Size(47, 17)
+        Me.cbIws.TabIndex = 27
+        Me.cbIws.TabStop = False
+        Me.cbIws.Text = "I&WS"
+        Me.cbIws.UseVisualStyleBackColor = True
+        '
+        'cbSs
+        '
+        Me.cbSs.AutoSize = True
+        Me.cbSs.Location = New System.Drawing.Point(9, 20)
+        Me.cbSs.Name = "cbSs"
+        Me.cbSs.Size = New System.Drawing.Size(91, 17)
+        Me.cbSs.TabIndex = 25
+        Me.cbSs.TabStop = False
+        Me.cbSs.Text = "Special &Script"
+        Me.cbSs.UseVisualStyleBackColor = True
+        '
         'cbLink
         '
         Me.cbLink.AutoSize = True
@@ -352,76 +443,6 @@ Partial Class frmMain
         Me.cbLink.TabIndex = 21
         Me.cbLink.Text = "Linked"
         Me.cbLink.UseVisualStyleBackColor = True
-        '
-        'cbVt
-        '
-        Me.cbVt.AutoSize = True
-        Me.cbVt.Location = New System.Drawing.Point(238, 20)
-        Me.cbVt.Name = "cbVt"
-        Me.cbVt.Size = New System.Drawing.Size(86, 17)
-        Me.cbVt.TabIndex = 31
-        Me.cbVt.Text = "Voice Talent"
-        Me.cbVt.UseVisualStyleBackColor = True
-        '
-        'cbRecord
-        '
-        Me.cbRecord.AutoSize = True
-        Me.cbRecord.Location = New System.Drawing.Point(121, 66)
-        Me.cbRecord.Name = "cbRecord"
-        Me.cbRecord.Size = New System.Drawing.Size(113, 17)
-        Me.cbRecord.TabIndex = 30
-        Me.cbRecord.Text = "Silent Record Line"
-        Me.cbRecord.UseVisualStyleBackColor = True
-        '
-        'cbPolling
-        '
-        Me.cbPolling.AutoSize = True
-        Me.cbPolling.Location = New System.Drawing.Point(121, 43)
-        Me.cbPolling.Name = "cbPolling"
-        Me.cbPolling.Size = New System.Drawing.Size(57, 17)
-        Me.cbPolling.TabIndex = 29
-        Me.cbPolling.Text = "Polling"
-        Me.cbPolling.UseVisualStyleBackColor = True
-        '
-        'cbPlayback
-        '
-        Me.cbPlayback.AutoSize = True
-        Me.cbPlayback.Location = New System.Drawing.Point(121, 20)
-        Me.cbPlayback.Name = "cbPlayback"
-        Me.cbPlayback.Size = New System.Drawing.Size(70, 17)
-        Me.cbPlayback.TabIndex = 28
-        Me.cbPlayback.Text = "Playback"
-        Me.cbPlayback.UseVisualStyleBackColor = True
-        '
-        'cbApl
-        '
-        Me.cbApl.AutoSize = True
-        Me.cbApl.Location = New System.Drawing.Point(9, 43)
-        Me.cbApl.Name = "cbApl"
-        Me.cbApl.Size = New System.Drawing.Size(46, 17)
-        Me.cbApl.TabIndex = 26
-        Me.cbApl.Text = "APL"
-        Me.cbApl.UseVisualStyleBackColor = True
-        '
-        'cbIws
-        '
-        Me.cbIws.AutoSize = True
-        Me.cbIws.Location = New System.Drawing.Point(9, 66)
-        Me.cbIws.Name = "cbIws"
-        Me.cbIws.Size = New System.Drawing.Size(47, 17)
-        Me.cbIws.TabIndex = 27
-        Me.cbIws.Text = "IWS"
-        Me.cbIws.UseVisualStyleBackColor = True
-        '
-        'cbSs
-        '
-        Me.cbSs.AutoSize = True
-        Me.cbSs.Location = New System.Drawing.Point(9, 20)
-        Me.cbSs.Name = "cbSs"
-        Me.cbSs.Size = New System.Drawing.Size(91, 17)
-        Me.cbSs.TabIndex = 25
-        Me.cbSs.Text = "Special Script"
-        Me.cbSs.UseVisualStyleBackColor = True
         '
         'lblOther
         '
@@ -460,11 +481,11 @@ Partial Class frmMain
         '
         'btnGen
         '
-        Me.btnGen.Location = New System.Drawing.Point(271, 629)
+        Me.btnGen.Location = New System.Drawing.Point(272, 628)
         Me.btnGen.Name = "btnGen"
         Me.btnGen.Size = New System.Drawing.Size(75, 23)
         Me.btnGen.TabIndex = 34
-        Me.btnGen.Text = "Generate!"
+        Me.btnGen.Text = "&Generate!"
         Me.btnGen.UseVisualStyleBackColor = True
         '
         'btnClear
@@ -474,7 +495,7 @@ Partial Class frmMain
         Me.btnClear.Name = "btnClear"
         Me.btnClear.Size = New System.Drawing.Size(75, 23)
         Me.btnClear.TabIndex = 35
-        Me.btnClear.Text = "Clear"
+        Me.btnClear.Text = "&Clear"
         Me.btnClear.UseVisualStyleBackColor = True
         '
         'GroupBox1
@@ -490,7 +511,7 @@ Partial Class frmMain
         '
         'rbTogether
         '
-        Me.rbTogether.Location = New System.Drawing.Point(108, 20)
+        Me.rbTogether.Location = New System.Drawing.Point(141, 20)
         Me.rbTogether.Name = "rbTogether"
         Me.rbTogether.Size = New System.Drawing.Size(90, 17)
         Me.rbTogether.TabIndex = 4
@@ -499,33 +520,24 @@ Partial Class frmMain
         '
         'rbSeparate
         '
-        Me.rbSeparate.Checked = True
         Me.rbSeparate.Location = New System.Drawing.Point(7, 20)
         Me.rbSeparate.Name = "rbSeparate"
         Me.rbSeparate.Size = New System.Drawing.Size(90, 17)
         Me.rbSeparate.TabIndex = 3
-        Me.rbSeparate.TabStop = True
         Me.rbSeparate.Text = "Separately"
         Me.rbSeparate.UseVisualStyleBackColor = True
         '
-        'rbOther
+        'lblGenerated
         '
-        Me.rbOther.AutoSize = True
-        Me.rbOther.Location = New System.Drawing.Point(108, 42)
-        Me.rbOther.Name = "rbOther"
-        Me.rbOther.Size = New System.Drawing.Size(51, 17)
-        Me.rbOther.TabIndex = 10
-        Me.rbOther.Text = "Other"
-        Me.rbOther.UseVisualStyleBackColor = True
-        '
-        'txtOther
-        '
-        Me.txtOther.Location = New System.Drawing.Point(210, 41)
-        Me.txtOther.Name = "txtOther"
-        Me.txtOther.ReadOnly = True
-        Me.txtOther.Size = New System.Drawing.Size(118, 20)
-        Me.txtOther.TabIndex = 11
-        Me.txtOther.TabStop = False
+        Me.lblGenerated.AutoSize = True
+        Me.lblGenerated.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblGenerated.ForeColor = System.Drawing.Color.Red
+        Me.lblGenerated.Location = New System.Drawing.Point(153, 633)
+        Me.lblGenerated.Name = "lblGenerated"
+        Me.lblGenerated.Size = New System.Drawing.Size(71, 13)
+        Me.lblGenerated.TabIndex = 44
+        Me.lblGenerated.Text = "GENERATED"
+        Me.lblGenerated.Visible = False
         '
         'frmMain
         '
@@ -533,6 +545,7 @@ Partial Class frmMain
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.CancelButton = Me.btnClear
         Me.ClientSize = New System.Drawing.Size(360, 661)
+        Me.Controls.Add(Me.lblGenerated)
         Me.Controls.Add(Me.cbLink)
         Me.Controls.Add(Me.GroupBox1)
         Me.Controls.Add(Me.btnClear)
@@ -559,6 +572,7 @@ Partial Class frmMain
         Me.Controls.Add(Me.lblTime)
         Me.Controls.Add(Me.txtCid)
         Me.Controls.Add(Me.lblCid)
+        Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.MaximizeBox = False
         Me.MaximumSize = New System.Drawing.Size(376, 700)
         Me.MinimumSize = New System.Drawing.Size(376, 700)
@@ -622,4 +636,5 @@ Partial Class frmMain
     Friend WithEvents cbLink As CheckBox
     Friend WithEvents rbOther As RadioButton
     Friend WithEvents txtOther As TextBox
+    Friend WithEvents lblGenerated As Label
 End Class

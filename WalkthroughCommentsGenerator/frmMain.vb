@@ -3,6 +3,7 @@
 Public Class frmMain
     'Reset form on load
     Private Sub frmMain_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        Me.Location = New Point(0, 0)
         resetForm()
 
     End Sub
@@ -14,7 +15,7 @@ Public Class frmMain
             txtOther.ReadOnly = False
         Else
             'Reset if not selected
-            txtOther.Text = "".ToString
+            txtOther.Text = "".ToString()
             txtOther.ReadOnly = True
         End If
     End Sub
@@ -26,7 +27,7 @@ Public Class frmMain
             txtPassword.ReadOnly = False
         Else
             'Reset if not selected
-            txtPassword.Text = "".ToString
+            txtPassword.Text = "".ToString()
             txtPassword.ReadOnly = True
         End If
     End Sub
@@ -48,20 +49,16 @@ Public Class frmMain
 
     End Sub
 
-    'When Comm combo box changes state: Toggle CommUsed checkbox\CommLink checkbox
+    'When Comm combo box changes state: Toggle CommUsed checkbox
     Private Sub cbComm_CheckedChanged(sender As Object, e As EventArgs) Handles cbComm.CheckedChanged
         If cbComm.Checked And cbLeaderview.Checked Then
             cbCommUsed.Enabled = True
             cbCommUsed.CheckState = CheckState.Checked
-            'cbLink.Enabled = True
         ElseIf cbComm.Checked And Not cbLeaderview.Checked Then
             cbCommUsed.CheckState = CheckState.Checked
-            'cbLink.Enabled = True
         Else
             cbCommUsed.CheckState = CheckState.Unchecked
             cbCommUsed.Enabled = False
-            'cbLink.Enabled = False
-            'cbLink.CheckState = CheckState.Unchecked
         End If
 
     End Sub
@@ -81,11 +78,11 @@ Public Class frmMain
         If cbNrp.Checked Then
             'If NRP is required, make an input box visible
             txtNrp.Visible = True
-            cbNrp.Text = "Yes   #:".ToString
+            cbNrp.Text = "Yes   #:".ToString()
         Else
             'If NRP is not required, hide and clear input
-            cbNrp.Text = "Yes".ToString
-            txtNrp.Text = "".ToString
+            cbNrp.Text = "Yes".ToString()
+            txtNrp.Text = "".ToString()
             txtNrp.Visible = False
         End If
 
@@ -98,16 +95,21 @@ Public Class frmMain
 
     'User clicks Generate button
     Private Sub btnGen_Click(sender As Object, e As EventArgs) Handles btnGen.Click
-        Dim validForm As Boolean = False
+        Dim arrEmptyInputs As New List(Of String)
         Dim comment As String = ""
+        Dim emptyInputs As String = ""
         Try
-            validForm = ValidateForm()
-            If validForm Then
+            arrEmptyInputs = ValidateForm()
+            If (arrEmptyInputs Is Nothing Or arrEmptyInputs.Count <= 0) Then
                 comment = GenerateComment()
-                CopyString(comment.ToString)
+                CopyString(comment.ToString())
                 SavetoFile(comment)
+                lblGenerated.Visible = True
             Else
-                Throw New ApplicationException("Input validation failed!")
+                For Each element As String In arrEmptyInputs
+                    emptyInputs &= element + Environment.NewLine
+                Next
+                Throw New ApplicationException("Please check the following:" + Environment.NewLine + emptyInputs)
             End If
         Catch ex As Exception
             MessageBox.Show(ex.Message)
@@ -116,56 +118,55 @@ Public Class frmMain
     End Sub
 
 
-    'Ensure form is complete
-    Private Function ValidateForm() As Boolean
-        Dim validCid, validPassword, validOther, validFacts, validVerified As Boolean
-        Dim validForm As Boolean = False
+    'Ensure form is complete. If input is empty, fill array with names.
+    Private Function ValidateForm() As List(Of String)
+        Dim arrEmptyImput As New List(Of String)
         Try
             'Check text boxes for input. NRP text box not checked to allow for later edit
-            If (String.IsNullOrEmpty(txtCid.Text.ToString)) Then
-                validCid = False
-            Else
-                validCid = True
+            'Check CID
+            If (String.IsNullOrEmpty(txtCid.Text.ToString().Trim())) Then
+                arrEmptyImput.Add("CID")
+            End If
+            'Check Dial In Early
+            If (String.IsNullOrEmpty(cmbEarly.Text.ToString().Trim())) Then
+                arrEmptyImput.Add("SPK Dial In")
+            End If
+            'Check Lines
+            If (rbTogether.Checked = False AndAlso rbSeparate.Checked = False) Then
+                arrEmptyImput.Add("SPK Lines")
+            End If
+            'Check Participants Reference
+            If (rbCid.Checked = False AndAlso rbDirect.Checked = False AndAlso rbPassword.Checked = False AndAlso rbOther.Checked = False) Then
+                arrEmptyImput.Add("Parts Reference")
             End If
             'Only validate password if used
             If rbPassword.Checked Then
-                If (String.IsNullOrEmpty(txtPassword.Text.ToString)) Then
-                    validPassword = False
-                Else
-                    validPassword = True
+                If (String.IsNullOrEmpty(txtPassword.Text.ToString().Trim())) Then
+                    arrEmptyImput.Add("Password")
                 End If
-            Else
-                validPassword = True
             End If
+            'Only validate "other" if used
             If rbOther.Checked Then
-                If (String.IsNullOrEmpty(txtOther.Text.ToString)) Then
-                    validOther = False
-                Else
-                    validOther = True
+                If (String.IsNullOrEmpty(txtOther.Text.ToString().Trim())) Then
+                    arrEmptyImput.Add("Other Ref")
                 End If
-            Else
-                validOther = True
             End If
-            If (String.IsNullOrEmpty(txtFacts.Text.ToString)) Then
-                validFacts = False
-            Else
-                validFacts = True
+            'Check Call Format
+            If (rbStandard.Checked = False AndAlso rbMulti.Checked = False AndAlso rbLecture.Checked = False AndAlso rbOpen.Checked = False) Then
+                arrEmptyImput.Add("Call Format")
             End If
-            If (String.IsNullOrEmpty(txtVerified.Text.ToString)) Then
-                validVerified = False
-            Else
-                validVerified = True
+            'Check Facts Complete
+            If (String.IsNullOrEmpty(txtFacts.Text.ToString().Trim())) Then
+                arrEmptyImput.Add("Facts Complete")
             End If
-
-            'Evaluate checks
-            If validCid AndAlso validPassword AndAlso validFacts AndAlso validFacts AndAlso validVerified Then
-                validForm = True
+            If (String.IsNullOrEmpty(txtVerified.Text.ToString().Trim())) Then
+                arrEmptyImput.Add("Verified With")
             End If
         Catch ex As Exception
             MessageBox.Show("Error validating form: " + ex.Message)
         End Try
 
-        Return validForm
+        Return arrEmptyImput
     End Function
 
     'Generate Comment String
@@ -174,9 +175,9 @@ Public Class frmMain
 
         Try
             'Add CID to comment
-            comment = "CID: " + txtCid.Text.ToString + Environment.NewLine
+            comment = "CID: " + txtCid.Text.ToString() + Environment.NewLine
             'Add Speakers to comment
-            comment &= "Speakers will dial in: " + cmbEarly.Text.ToString + " minutes early on "
+            comment &= "Speakers will dial in: " + cmbEarly.Text.ToString() + " minutes early on "
             If rbSeparate.Checked Then
                 comment &= "separate lines"
             ElseIf rbTogether.Checked Then
@@ -188,7 +189,7 @@ Public Class frmMain
             If rbCid.Checked Then
                 comment &= "Conference ID Number"
             ElseIf rbPassword.Checked Then
-                comment &= "Password\code(" + Convert.ToString(txtPassword.Text) + ")"
+                comment &= "Password(" + Convert.ToString(txtPassword.Text) + ")"
             ElseIf rbDirect.Checked Then
                 comment &= "Direct Entry"
             ElseIf rbOther.Checked Then
@@ -208,7 +209,7 @@ Public Class frmMain
             End If
             comment &= Environment.NewLine
             'Add FC to comment
-            comment &= "Facts Complete: " + txtFacts.Text.ToString + Environment.NewLine
+            comment &= "Facts Complete: " + txtFacts.Text.ToString() + Environment.NewLine
             'Add setup to comment
             comment &= "Setup Time Reviewed: Yes" + Environment.NewLine
             'Add LV to comment
@@ -230,10 +231,10 @@ Public Class frmMain
             'Add NRP to comment
             If cbNrp.Checked Then
                 comment &= "Special NRP/Enunciator Requested: YES   "
-                If (String.IsNullOrEmpty(txtNrp.Text.ToString)) Then
+                If (String.IsNullOrEmpty(txtNrp.Text.ToString())) Then
                     comment &= "NRP # pending"
                 Else
-                    comment &= "NRP # provided: " + txtNrp.Text.ToString
+                    comment &= "NRP # provided: " + txtNrp.Text.ToString()
                 End If
                 comment &= Environment.NewLine
             End If
@@ -260,7 +261,7 @@ Public Class frmMain
             End If
             'Add silent rec to comment
             If cbRecord.Checked Then
-                comment &= "Silent Record Line: Yes" + Environment.NewLine
+                comment &= "Backup Record Line: Yes" + Environment.NewLine
             End If
             'Add VT to comment
             If cbVt.Checked Then
@@ -270,18 +271,15 @@ Public Class frmMain
             Dim arrOtherDetails() As String
             Dim counter As Integer
             arrOtherDetails = txtOtherDetails.Lines
-            comment &= "Other details for operator: "
             If (arrOtherDetails IsNot Nothing AndAlso arrOtherDetails.Count > 0) Then
+                comment &= "Other details: "
                 For counter = 0 To arrOtherDetails.GetUpperBound(0)
                     comment &= Convert.ToString(arrOtherDetails(counter))
                     comment &= Environment.NewLine
                 Next
-            Else
-                comment &= Environment.NewLine
             End If
-
             'Add verified to comment
-            comment &= "Verified With: " + txtVerified.Text.ToString
+            comment &= "Verified With: " + txtVerified.Text.ToString()
         Catch ex As Exception
             MessageBox.Show("Error creating comment: " + ex.Message)
         End Try
@@ -291,12 +289,17 @@ Public Class frmMain
 
     'Call this to initialize/reset the form
     Private Sub resetForm()
-        txtCid.Text = "".ToString
-        cmbEarly.Text = Convert.ToString("15")
-        rbSeparate.Checked = True
+        txtCid.Text = "".ToString()
+        cmbEarly.Text = "".ToString()
+        rbTogether.Checked = False
+        rbSeparate.Checked = False
+        'Switch on and off resets entire combo group
         rbCid.Checked = True
+        rbCid.Checked = False
+        'Switch on and off resets entire combo group
         rbStandard.Checked = True
-        txtFacts.Text = "f&l".ToString
+        rbStandard.Checked = False
+        txtFacts.Text = "".ToString()
         cbLeaderview.CheckState = CheckState.Unchecked
         cbComm.CheckState = CheckState.Unchecked
         cbNrp.CheckState = CheckState.Unchecked
@@ -309,8 +312,9 @@ Public Class frmMain
         cbVt.CheckState = CheckState.Unchecked
         cbLink.CheckState = CheckState.Unchecked
         cbLink.Enabled = False
-        txtOtherDetails.Text = "".ToString
-        txtVerified.Text = "".ToString
+        txtOtherDetails.Text = "".ToString()
+        txtVerified.Text = "".ToString()
+        lblGenerated.Visible = False
     End Sub
 
     'Call this to copy a string to the system clipboard
@@ -318,7 +322,7 @@ Public Class frmMain
         Try
             If stringIn IsNot String.Empty Then
                 'Copy to clipboard
-                My.Computer.Clipboard.SetText(stringIn.ToString)
+                My.Computer.Clipboard.SetText(stringIn.ToString())
             Else
                 'Set error
                 Throw New ApplicationException("Nothing was generated!")
@@ -333,12 +337,12 @@ Public Class frmMain
         'Dim file As System.IO.StreamWriter
         Dim fileName, filePath As String
         Try
-            fileName = txtCid.Text.ToString.Trim + ".txt"
+            fileName = txtCid.Text.ToString().Trim + ".txt"
             'DevelopmentPath
-            filePath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\WT Comments\" + Convert.ToString(Now.Date.Year) + "\" + Convert.ToString(MonthName(Now.Date.Month)) + "\"
+            'filePath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\WT Comments\" + Convert.ToString(Now.Date.Year) + "\" + Convert.ToString(MonthName(Now.Date.Month)) + "\"
             'Production Path
-            'filePath = "W:\WT Comments\" + Convert.ToString(Now.Date.Year) + "\" + Convert.ToString(MonthName(Now.Date.Month)) + "\"
-
+            filePath = "\\ygk01cfp01\Operations\Call Execution\WT Team\" + Convert.ToString(Now.Date.Year) + "\" + Convert.ToString(MonthName(Now.Date.Month)) + "\"
+            MessageBox.Show(filePath)
             'Create directory and save file. (Directory will not be overwritten if it exists, file will)
             Directory.CreateDirectory(filePath)
             File.WriteAllText(filePath & Convert.ToString(fileName), body)
