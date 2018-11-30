@@ -9,7 +9,7 @@ Public Class frmMain
     End Sub
 
     'Toggle Form Textbox For Other Entry
-    Private Sub rbOther_CheckedChanged(sender As Object, e As EventArgs) Handles rbOther.CheckedChanged
+    Private Sub rbOther_CheckedChanged(sender As Object, e As EventArgs) 
         If rbOther.Checked Then
             'Enable Textbox
             txtOther.ReadOnly = False
@@ -21,7 +21,7 @@ Public Class frmMain
     End Sub
 
     'Toggle Form Textbox For Password
-    Private Sub rbPassword_CheckedChanged(sender As Object, e As EventArgs) Handles rbPassword.CheckedChanged
+    Private Sub rbPassword_CheckedChanged(sender As Object, e As EventArgs) 
         If rbPassword.Checked Then
             'Enable Textbox
             txtPassword.ReadOnly = False
@@ -33,7 +33,7 @@ Public Class frmMain
     End Sub
 
     'Force Selection of Comm Line when LeaderView is selected
-    Private Sub cbLeaderview_CheckedChanged(sender As Object, e As EventArgs) Handles cbLeaderview.CheckedChanged
+    Private Sub cbLeaderview_CheckedChanged(sender As Object, e As EventArgs) 
         If cbComm.Checked Then
             cbCommUsed.Enabled = True
         End If
@@ -50,7 +50,7 @@ Public Class frmMain
     End Sub
 
     'When Comm combo box changes state: Toggle CommUsed checkbox
-    Private Sub cbComm_CheckedChanged(sender As Object, e As EventArgs) Handles cbComm.CheckedChanged
+    Private Sub cbComm_CheckedChanged(sender As Object, e As EventArgs) 
         If cbComm.Checked And cbLeaderview.Checked Then
             cbCommUsed.Enabled = True
             cbCommUsed.CheckState = CheckState.Checked
@@ -64,7 +64,7 @@ Public Class frmMain
     End Sub
 
     'If Comm is not used, disable CommLink
-    Private Sub cbCommUsed_CheckedChanged(sender As Object, e As EventArgs) Handles cbCommUsed.CheckedChanged
+    Private Sub cbCommUsed_CheckedChanged(sender As Object, e As EventArgs) 
         If cbCommUsed.Checked Then
             cbLink.Enabled = True
         Else
@@ -74,7 +74,7 @@ Public Class frmMain
     End Sub
 
     'Toggle input for NRP
-    Private Sub cbNrp_CheckedChanged(sender As Object, e As EventArgs) Handles cbNrp.CheckedChanged
+    Private Sub cbNrp_CheckedChanged(sender As Object, e As EventArgs) 
         If cbNrp.Checked Then
             'If NRP is required, make an input box visible
             txtNrp.Visible = True
@@ -89,12 +89,12 @@ Public Class frmMain
     End Sub
 
     'User clicks Clear or presses Esc
-    Private Sub btnClear_Click(sender As Object, e As EventArgs) Handles btnClear.Click
+    Private Sub btnClear_Click(sender As Object, e As EventArgs) 
         resetForm()
     End Sub
 
     'User clicks Generate button
-    Private Sub btnGen_Click(sender As Object, e As EventArgs) Handles btnGen.Click
+    Private Sub btnGen_Click(sender As Object, e As EventArgs) 
         Dim arrEmptyInputs As New List(Of String)
         Dim comment As String = ""
         Dim emptyInputs As String = ""
@@ -120,53 +120,53 @@ Public Class frmMain
 
     'Ensure form is complete. If input is empty, fill array with names.
     Private Function ValidateForm() As List(Of String)
-        Dim arrEmptyImput As New List(Of String)
+        Dim arrEmptyInput As New List(Of String)
         Try
             'Check text boxes for input. NRP text box not checked to allow for later edit
             'Check CID
             If (String.IsNullOrEmpty(txtCid.Text.ToString().Trim())) Then
-                arrEmptyImput.Add("CID")
+                arrEmptyInput.Add("CID")
             End If
             'Check Dial In Early
             If (String.IsNullOrEmpty(cmbEarly.Text.ToString().Trim())) Then
-                arrEmptyImput.Add("SPK Dial In")
+                arrEmptyInput.Add("SPK Dial In")
             End If
             'Check Lines
             If (rbTogether.Checked = False AndAlso rbSeparate.Checked = False) Then
-                arrEmptyImput.Add("SPK Lines")
+                arrEmptyInput.Add("SPK Lines")
             End If
             'Check Participants Reference
             If (rbCid.Checked = False AndAlso rbDirect.Checked = False AndAlso rbPassword.Checked = False AndAlso rbOther.Checked = False) Then
-                arrEmptyImput.Add("Parts Reference")
+                arrEmptyInput.Add("Parts Reference")
             End If
             'Only validate password if used
             If rbPassword.Checked Then
                 If (String.IsNullOrEmpty(txtPassword.Text.ToString().Trim())) Then
-                    arrEmptyImput.Add("Password")
+                    arrEmptyInput.Add("Password")
                 End If
             End If
             'Only validate "other" if used
             If rbOther.Checked Then
                 If (String.IsNullOrEmpty(txtOther.Text.ToString().Trim())) Then
-                    arrEmptyImput.Add("Other Ref")
+                    arrEmptyInput.Add("Other Ref")
                 End If
             End If
             'Check Call Format
             If (rbStandard.Checked = False AndAlso rbMulti.Checked = False AndAlso rbLecture.Checked = False AndAlso rbOpen.Checked = False) Then
-                arrEmptyImput.Add("Call Format")
+                arrEmptyInput.Add("Call Format")
             End If
             'Check Facts Complete
             If (String.IsNullOrEmpty(txtFacts.Text.ToString().Trim())) Then
-                arrEmptyImput.Add("Facts Complete")
+                arrEmptyInput.Add("Facts Complete")
             End If
             If (String.IsNullOrEmpty(txtVerified.Text.ToString().Trim())) Then
-                arrEmptyImput.Add("Verified With")
+                arrEmptyInput.Add("Verified With")
             End If
         Catch ex As Exception
             MessageBox.Show("Error validating form: " + ex.Message)
         End Try
 
-        Return arrEmptyImput
+        Return arrEmptyInput
     End Function
 
     'Generate Comment String
